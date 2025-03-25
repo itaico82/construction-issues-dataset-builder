@@ -1,0 +1,43 @@
+{
+  "name": "construction-issues-dataset-builder",
+  "version": "1.0.0",
+  "description": "A tool to scrape construction site failures and issues from Reddit for LLM training",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "scrape": "node src/index.js",
+    "continue": "node src/index.js --continue",
+    "process": "node -e \"const DataProcessor = require('./src/dataProcessor'); new DataProcessor().processDataset()\"",
+    "validate": "node src/validateSetup.js",
+    "clean": "node -e \"const fs=require('fs');const path=require('path');const config=require('./config/config');[path.join(config.paths.processed, 'construction_issues_dataset.json'),path.join(config.paths.processed, 'llm_ready_construction_issues.json'),path.join(config.paths.processed, 'dataset_stats.json')].forEach(f => fs.existsSync(f) && fs.unlinkSync(f) && console.log('Removed ' + f))\"",
+    "clean:images": "node -e \"const fs=require('fs');const path=require('path');const config=require('./config/config');const imagesDir=config.paths.images;if(fs.existsSync(imagesDir)){fs.readdirSync(imagesDir).forEach(f => fs.unlinkSync(path.join(imagesDir, f)));console.log('All images removed from ' + imagesDir)}\"",
+    "clean:all": "npm run clean && npm run clean:images",
+    "setup": "npm install && npm run validate",
+    "import": "node src/manualImport.js",
+    "mock": "node src/createMockDataset.js",
+    "agents": "node run_agents.js",
+    "multi": "node src/multiSubredditRunner.js",
+    "multi:continue": "node src/multiSubredditRunner.js --continue",
+    "multi:civil": "node src/multiSubredditRunner.js CivilEngineering",
+    "multi:construction": "node src/multiSubredditRunner.js Construction",
+    "multi:structural": "node src/multiSubredditRunner.js StructuralEngineering",
+    "multi:osha": "node src/multiSubredditRunner.js OSHA",
+    "multi:new": "node src/multiSubredditRunner.js StructuralEngineering OSHA",
+    "expand": "sh expand_dataset.sh",
+    "expand:test": "node data/scripts/test_append_images.js"
+  },
+  "keywords": [
+    "reddit",
+    "scraper",
+    "construction",
+    "dataset",
+    "llm"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.6.2",
+    "dotenv": "^16.4.7",
+    "openai": "^4.89.0"
+  }
+}
